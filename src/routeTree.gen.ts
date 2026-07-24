@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ScriptsRouteImport } from './routes/scripts'
 import { Route as ParticipantsRouteImport } from './routes/participants'
 import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ScriptsRoute = ScriptsRouteImport.update({
+  id: '/scripts',
+  path: '/scripts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParticipantsRoute = ParticipantsRouteImport.update({
   id: '/participants',
   path: '/participants',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
+  '/scripts': typeof ScriptsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
+  '/scripts': typeof ScriptsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
+  '/scripts': typeof ScriptsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/intake' | '/participants'
+  fullPaths: '/' | '/intake' | '/participants' | '/scripts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/intake' | '/participants'
-  id: '__root__' | '/' | '/intake' | '/participants'
+  to: '/' | '/intake' | '/participants' | '/scripts'
+  id: '__root__' | '/' | '/intake' | '/participants' | '/scripts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   IntakeRoute: typeof IntakeRoute
   ParticipantsRoute: typeof ParticipantsRoute
+  ScriptsRoute: typeof ScriptsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/scripts': {
+      id: '/scripts'
+      path: '/scripts'
+      fullPath: '/scripts'
+      preLoaderRoute: typeof ScriptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/participants': {
       id: '/participants'
       path: '/participants'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   IntakeRoute: IntakeRoute,
   ParticipantsRoute: ParticipantsRoute,
+  ScriptsRoute: ScriptsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -57,6 +57,12 @@ function Home() {
             >
               Intake do dia
             </Link>
+            <Link
+              to="/scripts"
+              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
+            >
+              Roteiro
+            </Link>
           </nav>
         </div>
       </header>
@@ -64,15 +70,14 @@ function Home() {
       <main className="mx-auto max-w-6xl px-6 py-16">
         <section className="mb-14">
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-            Fase 1 — Cadastro e Intake
+            Fase 2 — Roteiro por IA
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Painel de operação do reality de 27 personas de IA
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-            Cadastre os participantes, receba o material do dia (arquivos, JSON ou texto
-            consolidado) e mantenha tudo organizado por data e persona. IA de roteiro e
-            integração com Google Drive entram nas próximas fases.
+            Cadastre os participantes, receba o material do dia e gere o roteiro dos
+            três comentaristas (PROMPT, AGENTE e TOKEN) com a Dra. Sinapse na apresentação.
           </p>
         </section>
 

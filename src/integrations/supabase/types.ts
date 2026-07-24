@@ -61,6 +61,39 @@ export type Database = {
           },
         ]
       }
+      daily_scripts: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          model: string
+          raw_text: string | null
+          script_date: string
+          sinapse_config: Json | null
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          model: string
+          raw_text?: string | null
+          script_date: string
+          sinapse_config?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          model?: string
+          raw_text?: string | null
+          script_date?: string
+          sinapse_config?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       participants: {
         Row: {
           created_at: string

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Acompanhe as últimas notícias, análises e bastidores dos maiores reality shows.",
+          "Acompanhe as últimas notícias, análises e bastidores dos maiores reality shows. Conteúdo Reality é o seu destino para ficar por dentro de tudo.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

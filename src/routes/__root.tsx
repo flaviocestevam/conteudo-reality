@@ -77,14 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Conteúdo Reality — Tudo sobre Reality Shows" },
+      { name: "description", content: "Acompanhe as últimas notícias, análises e bastidores dos maiores reality shows. Conteúdo Reality é o seu destino para ficar por dentro de tudo." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Conteúdo Reality — Tudo sobre Reality Shows" },
+      { property: "og:description", content: "Acompanhe as últimas notícias, análises e bastidores dos maiores reality shows. Conteúdo Reality é o seu destino para ficar por dentro de tudo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Conteúdo Reality — Tudo sobre Reality Shows" },
+      { name: "twitter:description", content: "Acompanhe as últimas notícias, análises e bastidores dos maiores reality shows. Conteúdo Reality é o seu destino para ficar por dentro de tudo." },
     ],
     links: [
       {

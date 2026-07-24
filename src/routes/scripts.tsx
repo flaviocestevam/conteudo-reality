@@ -13,9 +13,9 @@ export const Route = createFileRoute("/scripts")({
   component: ScriptsPage,
   head: () => ({
     meta: [
-      { title: "Roteiros · ATLAS Captura & Roteiro" },
+      { title: "Roteiros · SOUL AI BRASIL" },
       { name: "description", content: "Roteiro diário por momentos com PROMPT, AGENTE e TOKEN." },
-      { property: "og:title", content: "Roteiros · ATLAS Captura & Roteiro" },
+      { property: "og:title", content: "Roteiros · SOUL AI BRASIL" },
       { property: "og:description", content: "Roteiro diário por momentos com os três comentaristas." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

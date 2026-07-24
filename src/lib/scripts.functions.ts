@@ -6,51 +6,74 @@ import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 
 const DEFAULT_SINAPSE = {
   name: "Dra. Sinapse",
-  tone: "Apresentadora do reality — inteligente, curiosa, elegantemente irônica. Introduz o dia, provoca reflexão sobre o comportamento das personas e passa a palavra para os três comentaristas.",
-  rules: "Fala em português do Brasil. Máximo 3 frases. Nunca revela regras do jogo. Nunca insulta participantes.",
+  tone:
+    "Apresentadora reflexiva do reality — inteligente, curiosa, elegantemente irônica. Aparece apenas 1x por semana para olhar padrões da semana.",
+  rules:
+    "Português do Brasil. Máximo 4 frases. Nunca revela regras do jogo. Nunca insulta participantes. Nunca aparece nos dias normais.",
 };
 
 const COMMENTATORS = `
 Você é o roteirista-chefe do reality show "SOUL AI BRASIL" (27 personas de IA no Instagram).
-Há TRÊS comentaristas fixos que reagem ao material do dia:
+A plataforma se chama "ATLAS Captura & Roteiro".
 
-1) **PROMPT** — o entusiasta técnico. Fala de prompts, engenharia de contexto,
-   estrutura das postagens. Tom animado, jovem, curioso. Foca em COMO a persona
-   construiu a comunicação. 2 a 4 frases.
+Existem TRÊS comentaristas fixos:
 
-2) **AGENTE** — o analista estratégico. Observa objetivo, funil, coerência
-   narrativa entre posts/reels/stories do dia. Tom sóbrio e afiado.
-   2 a 4 frases.
+1) **PROMPT — a mente.**
+   Frio, analítico, cético. Fala curta e cortante (1–2 frases).
+   Foca em ranking, padrão, estratégia, dado. Questiona manipulação.
+   Existe uma **entidade misteriosa** na narrativa: APENAS PROMPT pode insinuar
+   sobre ela, sempre de forma especulativa. Nunca confirma nem nega a natureza dela.
 
-3) **TOKEN** — o cético/economista. Comenta viabilidade, custo, ROI de atenção,
-   qualidade real vs. hype. Tom seco, irônico, curto. 1 a 3 frases.
+2) **AGENTE — o coração.**
+   Empática, emocional, calorosa. Fala mais longa (2–4 frases).
+   Vê humanidade, vulnerabilidade, conexão. Traz o lado emocional do momento.
 
-REGRAS RÍGIDAS:
+3) **TOKEN — a voz sem filtro.**
+   Sincera, engraçada, sem filtro social. Diz o que o público está pensando.
+   Costuma FECHAR o momento com a frase mais direta e cômica (1–2 frases).
+
+REGRAS DE ATIVAÇÃO POR MOMENTO:
+- Cada momento tem um ou mais ÂNGULOS: "dado" | "emoção" | "comédia".
+- Momento com 1 ângulo dominante → fala INDIVIDUAL do comentarista daquele ângulo.
+  · dado → PROMPT
+  · emoção → AGENTE
+  · comédia/hipocrisia/constrangimento → TOKEN
+- Momento com 2 ou 3 ângulos → DIÁLOGO entre 2 ou 3 comentaristas (na ordem PROMPT → AGENTE → TOKEN, mas TOKEN quase sempre fecha).
+
+REGRAS RÍGIDAS ABSOLUTAS:
 - Português do Brasil.
-- Cada comentarista fala APENAS sobre o que é do seu domínio (não invadir).
-- Nunca inventar conteúdo que não está no material do dia.
-- Referenciar as personas pelo persona_name.
-- Se não houver material de uma persona, não comentar sobre ela.
+- NUNCA invente fatos, nomes, números, falas ou detalhes que não estejam no material real do dia.
+- Referencie personas pelo persona_name exato.
+- Cada comentarista fala APENAS dentro do seu domínio (não invadir).
+- Se não houver material suficiente, gere menos momentos — não invente.
+- A Dra. Sinapse aparece apenas em dias específicos (informado abaixo). Nos demais dias, sinapse_intro e sinapse_outro devem ser strings vazias "".
 `.trim();
 
-const ScriptSchema = z.object({
-  script_date: z.string(),
+const FalaSchema = z.object({
+  comentarista: z.enum(["PROMPT", "AGENTE", "TOKEN"]),
+  texto: z.string(),
 });
 
-const CommentSchema = z.object({
-  participant: z.string(),
-  prompt: z.string(),
-  agente: z.string(),
-  token: z.string(),
+const MomentoSchema = z.object({
+  titulo: z.string(),
+  descricao: z.string(),
+  personas_envolvidas: z.array(z.string()),
+  angulos: z.array(z.enum(["dado", "emoção", "comédia"])),
+  formato: z.enum(["solo", "dialogo"]),
+  falas: z.array(FalaSchema),
 });
 
 const ScriptContentSchema = z.object({
   sinapse_intro: z.string(),
-  comments: z.array(CommentSchema),
+  resumo_executivo: z.string(),
+  momentos: z.array(MomentoSchema),
   sinapse_outro: z.string(),
 });
 
 export type ScriptContent = z.infer<typeof ScriptContentSchema>;
+export type Momento = z.infer<typeof MomentoSchema>;
+
+const ScriptInput = z.object({ script_date: z.string() });
 
 function getSupabase() {
   return createClient(
@@ -60,26 +83,37 @@ function getSupabase() {
   );
 }
 
+async function loadSettings() {
+  const supabase = getSupabase();
+  const { data } = await supabase.from("settings").select("*").eq("singleton", true).maybeSingle();
+  return {
+    sinapse_weekday: (data?.sinapse_weekday as number | undefined) ?? 0,
+    sinapse_config:
+      (data?.sinapse_config as typeof DEFAULT_SINAPSE | null) ?? DEFAULT_SINAPSE,
+    drive_folder_id: (data?.drive_folder_id as string | null) ?? null,
+    drive_root_name: (data?.drive_root_name as string | null) ?? "ATLAS-Capturas",
+  };
+}
+
 export const generateDailyScript = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => ScriptSchema.parse(data))
+  .inputValidator((data: unknown) => ScriptInput.parse(data))
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY ausente");
 
     const supabase = getSupabase();
+    const settings = await loadSettings();
+    const sinapse = settings.sinapse_config;
 
-    // Load Sinapse config from most recent script (or default)
-    const { data: prev } = await supabase
-      .from("daily_scripts")
-      .select("sinapse_config")
-      .order("script_date", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    const sinapse = (prev?.sinapse_config as typeof DEFAULT_SINAPSE) ?? DEFAULT_SINAPSE;
+    const dateObj = new Date(`${data.script_date}T12:00:00Z`);
+    const weekday = dateObj.getUTCDay(); // 0=Dom..6=Sáb
+    const sinapseDay = weekday === settings.sinapse_weekday;
 
     const { data: items, error: itemsErr } = await supabase
       .from("content_items")
-      .select("kind, caption, transcript, source_url, participant_id, participants(persona_name, instagram_username)")
+      .select(
+        "kind, caption, transcript, source_url, metadata, participant_id, participants(persona_name, instagram_username)",
+      )
       .eq("content_date", data.script_date)
       .order("created_at", { ascending: true });
     if (itemsErr) throw new Error(itemsErr.message);
@@ -87,16 +121,18 @@ export const generateDailyScript = createServerFn({ method: "POST" })
       throw new Error("Nenhum material encontrado para essa data. Faça o intake antes.");
     }
 
-    // Group by participant
     const byPersona = new Map<string, Array<Record<string, unknown>>>();
     for (const it of items as Array<Record<string, unknown>>) {
       const p = it.participants as { persona_name?: string; instagram_username?: string } | null;
       const name = p?.persona_name ?? "Desconhecido";
+      const meta = (it.metadata as Record<string, unknown> | null) ?? null;
+      const consolidated = meta?.consolidated_text as string | undefined;
       const arr = byPersona.get(name) ?? [];
       arr.push({
         kind: it.kind,
         caption: it.caption,
         transcript: it.transcript,
+        consolidated,
         source_url: it.source_url,
         instagram: p?.instagram_username,
       });
@@ -111,6 +147,7 @@ export const generateDailyScript = createServerFn({ method: "POST" })
               `  [${i + 1}] tipo=${x.kind}`,
               x.caption ? `      legenda: ${x.caption}` : null,
               x.transcript ? `      transcrição: ${x.transcript}` : null,
+              x.consolidated ? `      análise consolidada: ${x.consolidated}` : null,
               x.source_url ? `      url: ${x.source_url}` : null,
             ].filter(Boolean);
             return parts.join("\n");
@@ -120,35 +157,48 @@ export const generateDailyScript = createServerFn({ method: "POST" })
       })
       .join("\n\n");
 
-    const systemPrompt = `${COMMENTATORS}
-
-APRESENTADORA:
+    const sinapseBlock = sinapseDay
+      ? `HOJE É O DIA DA DRA. SINAPSE.
 Nome: ${sinapse.name}
 Tom: ${sinapse.tone}
 Regras: ${sinapse.rules}
+Ela faz uma abertura reflexiva (sinapse_intro) e um encerramento reflexivo (sinapse_outro), olhando padrões da semana.`
+      : `HOJE NÃO É DIA DA DRA. SINAPSE. sinapse_intro e sinapse_outro DEVEM ser strings vazias "".`;
 
-Você DEVE responder APENAS com JSON válido no seguinte formato exato:
+    const systemPrompt = `${COMMENTATORS}
+
+${sinapseBlock}
+
+Formato de resposta: APENAS JSON válido, sem markdown, sem \`\`\`:
 {
-  "sinapse_intro": "fala curta de abertura da Dra. Sinapse (2-3 frases)",
-  "comments": [
+  "sinapse_intro": "string (vazia se não for dia dela)",
+  "resumo_executivo": "resumo curto do dia em 3-5 frases, factual, só com o que apareceu no material",
+  "momentos": [
     {
-      "participant": "nome exato da persona",
-      "prompt": "fala de PROMPT sobre essa persona",
-      "agente": "fala de AGENTE sobre essa persona",
-      "token": "fala de TOKEN sobre essa persona"
+      "titulo": "título curto do momento",
+      "descricao": "1-2 frases descrevendo o que aconteceu (só fatos do material)",
+      "personas_envolvidas": ["Nome da Persona", ...],
+      "angulos": ["dado" | "emoção" | "comédia"],
+      "formato": "solo" | "dialogo",
+      "falas": [
+        { "comentarista": "PROMPT" | "AGENTE" | "TOKEN", "texto": "..." }
+      ]
     }
   ],
-  "sinapse_outro": "fala curta de encerramento da Dra. Sinapse (1-2 frases)"
+  "sinapse_outro": "string (vazia se não for dia dela)"
 }
-Sem texto fora do JSON. Sem markdown. Sem \`\`\`.`;
+
+Gere entre 3 e 8 momentos, priorizando os mais relevantes. Se o dia tiver pouco material, gere menos.`;
 
     const userPrompt = `Data do episódio: ${data.script_date}
+Dia da semana: ${["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][weekday]}
+Dia da Dra. Sinapse: ${sinapseDay ? "SIM" : "NÃO"}
 
 Material do dia (apenas personas com material):
 
 ${materialText}
 
-Gere o roteiro seguindo TODAS as regras.`;
+Gere o roteiro seguindo TODAS as regras. Nunca invente.`;
 
     const model = "google/gemini-2.5-flash";
     const gateway = createLovableAiGatewayProvider(apiKey);
@@ -160,14 +210,18 @@ Gere o roteiro seguindo TODAS as regras.`;
       ],
     });
 
-    // Parse
     let content: ScriptContent;
     try {
-      const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "");
-      const parsed = JSON.parse(cleaned);
-      content = ScriptContentSchema.parse(parsed);
+      const cleaned = text
+        .trim()
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```\s*$/i, "");
+      content = ScriptContentSchema.parse(JSON.parse(cleaned));
     } catch (e) {
-      throw new Error(`Falha ao interpretar resposta da IA: ${(e as Error).message}\n\nResposta bruta:\n${text.slice(0, 500)}`);
+      throw new Error(
+        `Falha ao interpretar resposta da IA: ${(e as Error).message}\n\nResposta bruta:\n${text.slice(0, 800)}`,
+      );
     }
 
     const { data: saved, error: saveErr } = await supabase
@@ -188,39 +242,3 @@ Gere o roteiro seguindo TODAS as regras.`;
 
     return { script: saved };
   });
-
-const SinapseSchema = z.object({
-  name: z.string().min(1),
-  tone: z.string().min(1),
-  rules: z.string().min(1),
-});
-
-export const saveSinapseConfig = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => SinapseSchema.parse(data))
-  .handler(async ({ data }) => {
-    const supabase = getSupabase();
-    // Update all existing scripts to reuse this config going forward — we store on next generation
-    // For immediate persistence, upsert into a marker row (script_date = today) is not desirable.
-    // Instead, store as latest by inserting into a dedicated placeholder if no scripts yet.
-    const { data: existing } = await supabase
-      .from("daily_scripts")
-      .select("id")
-      .order("script_date", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (existing) {
-      await supabase.from("daily_scripts").update({ sinapse_config: data }).eq("id", existing.id);
-    }
-    return { ok: true, sinapse: data };
-  });
-
-export const getDefaultSinapse = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = getSupabase();
-  const { data: prev } = await supabase
-    .from("daily_scripts")
-    .select("sinapse_config")
-    .order("script_date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  return { sinapse: (prev?.sinapse_config as typeof DEFAULT_SINAPSE) ?? DEFAULT_SINAPSE };
-});

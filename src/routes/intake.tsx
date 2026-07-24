@@ -200,15 +200,25 @@ function IntakePage() {
               Registre posts, Reels, Stories e transcrições associados às personas.
             </p>
           </div>
-          <label className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Data:</span>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="rounded-md border border-border bg-background px-3 py-2"
-            />
-          </label>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => process.mutate()}
+              disabled={process.isPending}
+              className="rounded-md border border-input px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
+            >
+              {process.isPending ? "Processando..." : "Processar material do dia"}
+            </button>
+            <label className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Data:</span>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="rounded-md border border-border bg-background px-3 py-2"
+              />
+            </label>
+          </div>
+
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">

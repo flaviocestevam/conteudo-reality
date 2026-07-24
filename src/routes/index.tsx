@@ -57,6 +57,12 @@ function Home() {
             >
               Intake do dia
             </Link>
+            <Link
+              to="/scripts"
+              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
+            >
+              Roteiro
+            </Link>
           </nav>
         </div>
       </header>

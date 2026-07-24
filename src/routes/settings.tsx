@@ -10,9 +10,9 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
   head: () => ({
     meta: [
-      { title: "Configurações · ATLAS Captura & Roteiro" },
-      { name: "description", content: "Configure Google Drive, Dra. Sinapse e integração do ATLAS." },
-      { property: "og:title", content: "Configurações · ATLAS Captura & Roteiro" },
+      { title: "Configurações · SOUL AI BRASIL" },
+      { name: "description", content: "Configure Google Drive, Dra. Sinapse e integração da plataforma." },
+      { property: "og:title", content: "Configurações · SOUL AI BRASIL" },
       { property: "og:description", content: "Configure Google Drive, Dra. Sinapse e integração." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -40,7 +40,7 @@ function SettingsPage() {
 
   const [form, setForm] = useState({
     drive_folder_id: "",
-    drive_root_name: "ATLAS-Capturas",
+    drive_root_name: "SOUL-AI-BRASIL-Capturas",
     sinapse_weekday: 0,
     sinapse_name: "Dra. Sinapse",
     sinapse_tone: "",
@@ -51,7 +51,7 @@ function SettingsPage() {
     if (!s) return;
     setForm({
       drive_folder_id: s.drive_folder_id ?? "",
-      drive_root_name: s.drive_root_name ?? "ATLAS-Capturas",
+      drive_root_name: s.drive_root_name ?? "SOUL-AI-BRASIL-Capturas",
       sinapse_weekday: s.sinapse_weekday ?? 0,
       sinapse_name: s.sinapse_config?.name ?? "Dra. Sinapse",
       sinapse_tone: s.sinapse_config?.tone ?? "",
@@ -64,7 +64,7 @@ function SettingsPage() {
       saveFn({
         data: {
           drive_folder_id: form.drive_folder_id.trim() || null,
-          drive_root_name: form.drive_root_name.trim() || "ATLAS-Capturas",
+          drive_root_name: form.drive_root_name.trim() || "SOUL-AI-BRASIL-Capturas",
           sinapse_weekday: form.sinapse_weekday,
           sinapse_config: {
             name: form.sinapse_name,

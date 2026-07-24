@@ -7,9 +7,9 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      { title: "ATLAS Captura & Roteiro" },
+      { title: "SOUL AI BRASIL" },
       { name: "description", content: "Painel interno de captura, organização e roteiro diário para o reality SOUL AI BRASIL (27 personas de IA)." },
-      { property: "og:title", content: "ATLAS Captura & Roteiro" },
+      { property: "og:title", content: "SOUL AI BRASIL" },
       { property: "og:description", content: "Painel de captura, organização e roteiro diário do reality de 27 personas de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -64,7 +64,7 @@ function Home() {
       <main className="mx-auto max-w-6xl px-6 py-12">
         <section className="mb-10">
           <p className="mb-2 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-            ATLAS · SOUL AI BRASIL
+            SOUL AI BRASIL
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Captura & Roteiro do reality de 27 personas de IA
@@ -107,7 +107,7 @@ function Home() {
           <ol className="space-y-2 text-sm text-muted-foreground">
             <li>1. Receber material via <Link to="/intake" className="text-primary underline">Material do dia</Link> ou pelo webhook <code>POST /api/public/intake</code>.</li>
             <li>2. Em <Link to="/scripts" className="text-primary underline">Roteiros</Link>: processar material (transcrição), gerar roteiro por IA e sincronizar com o Google Drive.</li>
-            <li>3. A pasta <code>ATLAS-Capturas/AAAA-MM-DD/</code> conterá <code>00-RELATORIO-GERAL.md</code> e uma subpasta por persona.</li>
+            <li>3. A pasta <code>SOUL-AI-BRASIL-Capturas/AAAA-MM-DD/</code> conterá <code>00-RELATORIO-GERAL.md</code> e uma subpasta por persona.</li>
           </ol>
         </section>
       </main>

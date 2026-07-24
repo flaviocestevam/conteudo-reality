@@ -14,7 +14,7 @@ const DEFAULT_SINAPSE = {
 
 const COMMENTATORS = `
 Você é o roteirista-chefe do reality show "SOUL AI BRASIL" (27 personas de IA no Instagram).
-A plataforma se chama "ATLAS Captura & Roteiro".
+A plataforma se chama "SOUL AI BRASIL".
 
 Existem TRÊS comentaristas fixos:
 
@@ -91,7 +91,7 @@ async function loadSettings() {
     sinapse_config:
       (data?.sinapse_config as typeof DEFAULT_SINAPSE | null) ?? DEFAULT_SINAPSE,
     drive_folder_id: (data?.drive_folder_id as string | null) ?? null,
-    drive_root_name: (data?.drive_root_name as string | null) ?? "ATLAS-Capturas",
+    drive_root_name: (data?.drive_root_name as string | null) ?? "SOUL-AI-BRASIL-Capturas",
   };
 }
 

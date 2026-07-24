@@ -77,13 +77,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ATLAS Captura & Roteiro" },
+      { title: "SOUL AI BRASIL" },
       { name: "description", content: "Plataforma interna de captura, organização e roteiro diário do reality SOUL AI BRASIL (27 personas de IA)." },
-      { property: "og:title", content: "ATLAS Captura & Roteiro" },
+      { property: "og:title", content: "SOUL AI BRASIL" },
       { property: "og:description", content: "Captura, organização e roteiro diário do reality de 27 personas de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "ATLAS Captura & Roteiro" },
+      { name: "twitter:title", content: "SOUL AI BRASIL" },
       { name: "twitter:description", content: "Captura, organização e roteiro diário do reality de 27 personas de IA." },
     ],
     links: [

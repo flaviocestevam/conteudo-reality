@@ -11,9 +11,9 @@ export const Route = createFileRoute("/intake")({
   component: IntakePage,
   head: () => ({
     meta: [
-      { title: "Material do dia · ATLAS Captura & Roteiro" },
+      { title: "Material do dia · SOUL AI BRASIL" },
       { name: "description", content: "Envie posts, Reels, Stories e transcrições do dia associados às personas." },
-      { property: "og:title", content: "Material do dia · ATLAS Captura & Roteiro" },
+      { property: "og:title", content: "Material do dia · SOUL AI BRASIL" },
       { property: "og:description", content: "Envie material do dia associado às personas do reality." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

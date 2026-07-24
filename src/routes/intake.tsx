@@ -208,6 +208,11 @@ function IntakePage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Registre posts, Reels, Stories e transcrições associados às personas.
             </p>
+            <p className="mt-2 max-w-2xl text-xs text-muted-foreground">
+              ⚠️ A captura real do Instagram acontece por uma ferramenta externa. Esta tela
+              apenas <b>recebe</b> o material já baixado (arquivo, legenda ou transcrição) —
+              via upload, colagem em JSON/texto ou pelo webhook <code>POST /api/public/intake</code>.
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <button

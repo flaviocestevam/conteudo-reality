@@ -8,13 +8,13 @@ export const Route = createFileRoute("/intake")({
   component: IntakePage,
   head: () => ({
     meta: [
-      { title: "Intake do dia · ATLAS" },
+      { title: "Intake do dia · SOUL AI BRASIL" },
       {
         name: "description",
         content:
           "Envie o material do dia (arquivos, JSON ou texto consolidado) associado a cada participante.",
       },
-      { property: "og:title", content: "Intake do dia · ATLAS" },
+      { property: "og:title", content: "Intake do dia · SOUL AI BRASIL" },
       {
         property: "og:description",
         content:
@@ -197,7 +197,7 @@ function IntakePage() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-            ← ATLAS
+            ← SOUL AI BRASIL
           </Link>
           <nav className="flex gap-1 text-sm">
             <Link

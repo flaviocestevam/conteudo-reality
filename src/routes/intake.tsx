@@ -1,25 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
+import { AtlasHeader } from "@/components/AtlasNav";
+import { processDailyContent } from "@/lib/process.functions";
 
 export const Route = createFileRoute("/intake")({
   component: IntakePage,
   head: () => ({
     meta: [
-      { title: "Intake do dia · SOUL AI BRASIL" },
-      {
-        name: "description",
-        content:
-          "Envie o material do dia (arquivos, JSON ou texto consolidado) associado a cada participante.",
-      },
-      { property: "og:title", content: "Intake do dia · SOUL AI BRASIL" },
-      {
-        property: "og:description",
-        content:
-          "Envie o material do dia (arquivos, JSON ou texto consolidado) associado a cada participante.",
-      },
+      { title: "Material do dia · ATLAS Captura & Roteiro" },
+      { name: "description", content: "Envie posts, Reels, Stories e transcrições do dia associados às personas." },
+      { property: "og:title", content: "Material do dia · ATLAS Captura & Roteiro" },
+      { property: "og:description", content: "Envie material do dia associado às personas do reality." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

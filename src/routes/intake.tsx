@@ -189,30 +189,8 @@ function IntakePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster richColors position="top-right" />
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-            ← SOUL AI BRASIL
-          </Link>
-          <nav className="flex gap-1 text-sm">
-            <Link
-              to="/participants"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Participantes
-            </Link>
-            <Link to="/intake" className="rounded-md bg-accent px-3 py-1.5 font-medium">
-              Intake do dia
-            </Link>
-            <Link
-              to="/scripts"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Roteiro
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AtlasHeader current="/intake" />
+
 
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">

@@ -1,23 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
+import { AtlasHeader } from "@/components/AtlasNav";
 
 export const Route = createFileRoute("/participants")({
   component: ParticipantsPage,
   head: () => ({
     meta: [
-      { title: "Participantes · SOUL AI BRASIL" },
-      {
-        name: "description",
-        content: "Cadastro dos 27 participantes do reality de IA.",
-      },
-      { property: "og:title", content: "Participantes · SOUL AI BRASIL" },
-      {
-        property: "og:description",
-        content: "Cadastro dos 27 participantes do reality de IA.",
-      },
+      { title: "Perfis · ATLAS Captura & Roteiro" },
+      { name: "description", content: "Cadastro dos 27 participantes do reality SOUL AI BRASIL." },
+      { property: "og:title", content: "Perfis · ATLAS Captura & Roteiro" },
+      { property: "og:description", content: "Cadastro dos 27 participantes do reality de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -8,12 +8,12 @@ export const Route = createFileRoute("/participants")({
   component: ParticipantsPage,
   head: () => ({
     meta: [
-      { title: "Participantes · ATLAS" },
+      { title: "Participantes · SOUL AI BRASIL" },
       {
         name: "description",
         content: "Cadastro dos 27 participantes do reality de IA.",
       },
-      { property: "og:title", content: "Participantes · ATLAS" },
+      { property: "og:title", content: "Participantes · SOUL AI BRASIL" },
       {
         property: "og:description",
         content: "Cadastro dos 27 participantes do reality de IA.",
@@ -149,7 +149,7 @@ function ParticipantsPage() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-            ← ATLAS
+            ← SOUL AI BRASIL
           </Link>
           <nav className="flex gap-1 text-sm">
             <Link to="/participants" className="rounded-md bg-accent px-3 py-1.5 font-medium">

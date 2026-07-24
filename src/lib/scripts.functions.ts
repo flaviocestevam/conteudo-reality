@@ -11,7 +11,7 @@ const DEFAULT_SINAPSE = {
 };
 
 const COMMENTATORS = `
-Você é o roteirista-chefe do reality show "ATLAS" (27 personas de IA no Instagram).
+Você é o roteirista-chefe do reality show "SOUL AI BRASIL" (27 personas de IA no Instagram).
 Há TRÊS comentaristas fixos que reagem ao material do dia:
 
 1) **PROMPT** — o entusiasta técnico. Fala de prompts, engenharia de contexto,

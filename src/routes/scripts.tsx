@@ -14,13 +14,13 @@ export const Route = createFileRoute("/scripts")({
   component: ScriptsPage,
   head: () => ({
     meta: [
-      { title: "Roteiro diário — ATLAS" },
+      { title: "Roteiro diário — SOUL AI BRASIL" },
       {
         name: "description",
         content:
           "Geração de roteiro diário com comentários de PROMPT, AGENTE e TOKEN a partir do material capturado.",
       },
-      { property: "og:title", content: "Roteiro diário — ATLAS" },
+      { property: "og:title", content: "Roteiro diário — SOUL AI BRASIL" },
       {
         property: "og:description",
         content:
@@ -80,7 +80,7 @@ function ScriptsPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div className="flex items-baseline gap-3">
             <Link to="/" className="text-lg font-bold tracking-tight">
-              ATLAS
+              SOUL AI BRASIL
             </Link>
             <span className="text-sm text-muted-foreground">Roteiro diário</span>
           </div>

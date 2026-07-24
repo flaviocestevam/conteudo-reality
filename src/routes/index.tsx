@@ -6,13 +6,13 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      { title: "ATLAS Captura & Roteiro" },
+      { title: "SOUL AI BRASIL Captura & Roteiro" },
       {
         name: "description",
         content:
           "Painel de captura, organização e roteiro diário para o reality show das 27 personas de IA.",
       },
-      { property: "og:title", content: "ATLAS Captura & Roteiro" },
+      { property: "og:title", content: "SOUL AI BRASIL Captura & Roteiro" },
       {
         property: "og:description",
         content:
@@ -41,7 +41,7 @@ function Home() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div className="flex items-baseline gap-3">
-            <span className="text-lg font-bold tracking-tight">ATLAS</span>
+            <span className="text-lg font-bold tracking-tight">SOUL AI BRASIL</span>
             <span className="text-sm text-muted-foreground">Captura & Roteiro</span>
           </div>
           <nav className="flex gap-1 text-sm">

@@ -73,6 +73,11 @@ function Home() {
             Recebe o material capturado externamente, organiza no Google Drive, analisa com IA
             e gera o relatório diário + roteiros de PROMPT, AGENTE e TOKEN.
           </p>
+          <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+            <b>Importante:</b> a captura real dos posts, Reels e Stories do Instagram é feita
+            por uma ferramenta externa. Esta plataforma recebe o material já baixado (por upload,
+            colagem ou pelo webhook <code>POST /api/public/intake</code>) e cuida de tudo daí em diante.
+          </p>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

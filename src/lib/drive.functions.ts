@@ -204,20 +204,21 @@ export const syncDayToDrive = createServerFn({ method: "POST" })
     const rootId = await findOrCreateFolder(rootName, rootParent);
     const dayId = await findOrCreateFolder(data.script_date, rootId);
 
-    // Persona subfolders + text files
+    // Persona subfolders + arquivo consolidado por persona
     let idx = 0;
     for (const [personaName, arr] of materialByPersona) {
       idx++;
       const num = String(idx).padStart(2, "0");
       const folderName = `Persona-${num}-${slugify(personaName)}`;
       const personaFolder = await findOrCreateFolder(folderName, dayId);
-      for (let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        const filename = `${String(i + 1).padStart(2, "0")}-${item.kind}.md`;
-        const md = `# ${personaName} — ${item.kind}\n\n${item.text || "_(sem texto)_"}\n`;
-        await uploadMarkdown(filename, md, personaFolder);
-      }
+
+      const parts: string[] = [`# ${personaName} — ${data.script_date}`, ""];
+      arr.forEach((item, i) => {
+        parts.push(`## ${i + 1}. ${item.kind}`, "", item.text || "_(sem texto)_", "");
+      });
+      await uploadMarkdown("conteudo-consolidado.md", parts.join("\n"), personaFolder);
     }
+
 
     // Relatório geral
     const relatorio = buildRelatorioMd(

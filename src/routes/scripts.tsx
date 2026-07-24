@@ -53,7 +53,7 @@ function ScriptsPage() {
     mutationFn: () => processFn({ data: { script_date: date } }),
     onSuccess: (r) =>
       toast.success(
-        `Processados ${r.processed} itens (transcritos: ${r.transcribed}, já processados: ${r.skipped})`,
+        `Processados ${r.processed} · transcritos ${r.transcribed} · vídeos analisados ${r.analyzed} · pulados ${r.skipped}`,
       ),
     onError: (e: Error) => toast.error(e.message),
   });

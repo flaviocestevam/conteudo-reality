@@ -133,7 +133,7 @@ function ScriptsPage() {
 
         {!isLoading && !script && (
           <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-            Sem roteiro para {date}. Faça o intake, processe o material e clique em <b>Gerar roteiro</b>.
+            Sem roteiro para {date}. Registre o material, processe o material e clique em <b>Gerar roteiro</b>.
           </div>
         )}
 

@@ -204,7 +204,7 @@ function IntakePage() {
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Intake do dia</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Material do dia</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Registre posts, Reels, Stories e transcrições associados às personas.
             </p>

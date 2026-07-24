@@ -118,7 +118,7 @@ export const generateDailyScript = createServerFn({ method: "POST" })
       .order("created_at", { ascending: true });
     if (itemsErr) throw new Error(itemsErr.message);
     if (!items || items.length === 0) {
-      throw new Error("Nenhum material encontrado para essa data. Faça o intake antes.");
+      throw new Error("Nenhum material encontrado para essa data. Registre o material antes.");
     }
 
     const byPersona = new Map<string, Array<Record<string, unknown>>>();

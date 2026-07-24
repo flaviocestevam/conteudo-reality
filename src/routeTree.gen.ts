@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScriptsRouteImport } from './routes/scripts'
 import { Route as ParticipantsRouteImport } from './routes/participants'
 import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicIntakeRouteImport } from './routes/api/public/intake'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScriptsRoute = ScriptsRouteImport.update({
   id: '/scripts',
   path: '/scripts',
@@ -34,18 +41,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIntakeRoute = ApiPublicIntakeRouteImport.update({
+  id: '/api/public/intake',
+  path: '/api/public/intake',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
   '/scripts': typeof ScriptsRoute
+  '/settings': typeof SettingsRoute
+  '/api/public/intake': typeof ApiPublicIntakeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
   '/scripts': typeof ScriptsRoute
+  '/settings': typeof SettingsRoute
+  '/api/public/intake': typeof ApiPublicIntakeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,34 @@ export interface FileRoutesById {
   '/intake': typeof IntakeRoute
   '/participants': typeof ParticipantsRoute
   '/scripts': typeof ScriptsRoute
+  '/settings': typeof SettingsRoute
+  '/api/public/intake': typeof ApiPublicIntakeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/intake' | '/participants' | '/scripts'
+  fullPaths:
+    | '/'
+    | '/intake'
+    | '/participants'
+    | '/scripts'
+    | '/settings'
+    | '/api/public/intake'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/intake' | '/participants' | '/scripts'
-  id: '__root__' | '/' | '/intake' | '/participants' | '/scripts'
+  to:
+    | '/'
+    | '/intake'
+    | '/participants'
+    | '/scripts'
+    | '/settings'
+    | '/api/public/intake'
+  id:
+    | '__root__'
+    | '/'
+    | '/intake'
+    | '/participants'
+    | '/scripts'
+    | '/settings'
+    | '/api/public/intake'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +104,19 @@ export interface RootRouteChildren {
   IntakeRoute: typeof IntakeRoute
   ParticipantsRoute: typeof ParticipantsRoute
   ScriptsRoute: typeof ScriptsRoute
+  SettingsRoute: typeof SettingsRoute
+  ApiPublicIntakeRoute: typeof ApiPublicIntakeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scripts': {
       id: '/scripts'
       path: '/scripts'
@@ -99,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/intake': {
+      id: '/api/public/intake'
+      path: '/api/public/intake'
+      fullPath: '/api/public/intake'
+      preLoaderRoute: typeof ApiPublicIntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,17 +160,9 @@ const rootRouteChildren: RootRouteChildren = {
   IntakeRoute: IntakeRoute,
   ParticipantsRoute: ParticipantsRoute,
   ScriptsRoute: ScriptsRoute,
+  SettingsRoute: SettingsRoute,
+  ApiPublicIntakeRoute: ApiPublicIntakeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

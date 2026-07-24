@@ -121,6 +121,39 @@ export type Database = {
         }
         Relationships: []
       }
+      settings: {
+        Row: {
+          created_at: string
+          drive_folder_id: string | null
+          drive_root_name: string
+          id: string
+          sinapse_config: Json
+          sinapse_weekday: number
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          drive_folder_id?: string | null
+          drive_root_name?: string
+          id?: string
+          sinapse_config?: Json
+          sinapse_weekday?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          drive_folder_id?: string | null
+          drive_root_name?: string
+          id?: string
+          sinapse_config?: Json
+          sinapse_weekday?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,116 +1,141 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AtlasHeader } from "@/components/AtlasNav";
 
 export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      { title: "SOUL AI BRASIL Captura & Roteiro" },
-      {
-        name: "description",
-        content:
-          "Painel de captura, organização e roteiro diário para o reality show das 27 personas de IA.",
-      },
-      { property: "og:title", content: "SOUL AI BRASIL Captura & Roteiro" },
-      {
-        property: "og:description",
-        content:
-          "Painel de captura, organização e roteiro diário para o reality show das 27 personas de IA.",
-      },
+      { title: "ATLAS Captura & Roteiro" },
+      { name: "description", content: "Painel interno de captura, organização e roteiro diário para o reality SOUL AI BRASIL (27 personas de IA)." },
+      { property: "og:title", content: "ATLAS Captura & Roteiro" },
+      { property: "og:description", content: "Painel de captura, organização e roteiro diário do reality de 27 personas de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });
 
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function Home() {
+  const today = todayISO();
   const { data: counts } = useQuery({
-    queryKey: ["home-counts"],
+    queryKey: ["home-counts", today],
     queryFn: async () => {
-      const [p, c] = await Promise.all([
+      const [p, c, s, todayItems] = await Promise.all([
         supabase.from("participants").select("id", { count: "exact", head: true }),
         supabase.from("content_items").select("id", { count: "exact", head: true }),
+        supabase.from("daily_scripts").select("id", { count: "exact", head: true }),
+        supabase
+          .from("content_items")
+          .select("id", { count: "exact", head: true })
+          .eq("content_date", today),
       ]);
-      return { participants: p.count ?? 0, items: c.count ?? 0 };
+      return {
+        participants: p.count ?? 0,
+        items: c.count ?? 0,
+        scripts: s.count ?? 0,
+        today: todayItems.count ?? 0,
+      };
+    },
+  });
+
+  const { data: lastScript } = useQuery({
+    queryKey: ["last-script"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("daily_scripts")
+        .select("script_date, created_at")
+        .order("script_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
     },
   });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <div className="flex items-baseline gap-3">
-            <span className="text-lg font-bold tracking-tight">SOUL AI BRASIL</span>
-            <span className="text-sm text-muted-foreground">Captura & Roteiro</span>
-          </div>
-          <nav className="flex gap-1 text-sm">
-            <Link
-              to="/participants"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Participantes
-            </Link>
-            <Link
-              to="/intake"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Intake do dia
-            </Link>
-            <Link
-              to="/scripts"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Roteiro
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AtlasHeader current="/" />
 
-      <main className="mx-auto max-w-6xl px-6 py-16">
-        <section className="mb-14">
-          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-            Fase 2 — Roteiro por IA
+      <main className="mx-auto max-w-6xl px-6 py-12">
+        <section className="mb-10">
+          <p className="mb-2 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            ATLAS · SOUL AI BRASIL
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Painel de operação do reality de 27 personas de IA
+            Captura & Roteiro do reality de 27 personas de IA
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-            Cadastre os participantes, receba o material do dia e gere o roteiro dos
-            três comentaristas (PROMPT, AGENTE e TOKEN) com a Dra. Sinapse na apresentação.
+            Recebe o material capturado externamente, organiza no Google Drive, analisa com IA
+            e gera o relatório diário + roteiros de PROMPT, AGENTE e TOKEN.
           </p>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-2">
-          <Link
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card
             to="/participants"
-            className="group rounded-2xl border border-border bg-card p-6 transition hover:border-foreground/40"
-          >
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Perfis cadastrados
-            </div>
-            <div className="mb-3 text-4xl font-bold tabular-nums">
-              {counts?.participants ?? "—"} <span className="text-lg text-muted-foreground">/ 27</span>
-            </div>
-            <div className="text-sm text-muted-foreground group-hover:text-foreground">
-              Gerenciar participantes →
-            </div>
-          </Link>
-
-          <Link
+            label="Perfis"
+            value={`${counts?.participants ?? "—"} / 27`}
+            hint="Gerenciar personas"
+          />
+          <Card
             to="/intake"
-            className="group rounded-2xl border border-border bg-card p-6 transition hover:border-foreground/40"
-          >
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Itens do material recebido
-            </div>
-            <div className="mb-3 text-4xl font-bold tabular-nums">{counts?.items ?? "—"}</div>
-            <div className="text-sm text-muted-foreground group-hover:text-foreground">
-              Enviar material do dia →
-            </div>
-          </Link>
+            label="Material hoje"
+            value={String(counts?.today ?? "—")}
+            hint="Ver material do dia"
+          />
+          <Card
+            to="/scripts"
+            label="Roteiros gerados"
+            value={String(counts?.scripts ?? "—")}
+            hint={lastScript ? `Último: ${lastScript.script_date}` : "Nenhum ainda"}
+          />
+          <Card
+            to="/settings"
+            label="Total de itens"
+            value={String(counts?.items ?? "—")}
+            hint="Configurações →"
+          />
+        </section>
+
+        <section className="mt-12 rounded-2xl border border-border bg-card p-6">
+          <h2 className="mb-2 text-lg font-semibold">Fluxo do dia</h2>
+          <ol className="space-y-2 text-sm text-muted-foreground">
+            <li>1. Receber material via <Link to="/intake" className="text-primary underline">Material do dia</Link> ou pelo webhook <code>POST /api/public/intake</code>.</li>
+            <li>2. Em <Link to="/scripts" className="text-primary underline">Roteiros</Link>: processar material (transcrição), gerar roteiro por IA e sincronizar com o Google Drive.</li>
+            <li>3. A pasta <code>ATLAS-Capturas/AAAA-MM-DD/</code> conterá <code>00-RELATORIO-GERAL.md</code> e uma subpasta por persona.</li>
+          </ol>
         </section>
       </main>
     </div>
+  );
+}
+
+function Card({
+  to,
+  label,
+  value,
+  hint,
+}: {
+  to: "/participants" | "/intake" | "/scripts" | "/settings";
+  label: string;
+  value: string;
+  hint: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="group rounded-2xl border border-border bg-card p-5 transition hover:border-foreground/40"
+    >
+      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
+      <div className="mb-2 text-3xl font-bold tabular-nums">{value}</div>
+      <div className="text-xs text-muted-foreground group-hover:text-foreground">{hint} →</div>
+    </Link>
   );
 }

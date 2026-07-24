@@ -1,25 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
+import { AtlasHeader } from "@/components/AtlasNav";
+import { processDailyContent } from "@/lib/process.functions";
 
 export const Route = createFileRoute("/intake")({
   component: IntakePage,
   head: () => ({
     meta: [
-      { title: "Intake do dia · SOUL AI BRASIL" },
-      {
-        name: "description",
-        content:
-          "Envie o material do dia (arquivos, JSON ou texto consolidado) associado a cada participante.",
-      },
-      { property: "og:title", content: "Intake do dia · SOUL AI BRASIL" },
-      {
-        property: "og:description",
-        content:
-          "Envie o material do dia (arquivos, JSON ou texto consolidado) associado a cada participante.",
-      },
+      { title: "Material do dia · ATLAS Captura & Roteiro" },
+      { name: "description", content: "Envie posts, Reels, Stories e transcrições do dia associados às personas." },
+      { property: "og:title", content: "Material do dia · ATLAS Captura & Roteiro" },
+      { property: "og:description", content: "Envie material do dia associado às personas do reality." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -83,6 +78,15 @@ function IntakePage() {
   });
   const [file, setFile] = useState<File | null>(null);
   const [bulk, setBulk] = useState("");
+
+  const processFn = useServerFn(processDailyContent);
+  const process = useMutation({
+    mutationFn: () => processFn({ data: { script_date: date } }),
+    onSuccess: (r) =>
+      toast.success(`Processados ${r.processed} (transcritos: ${r.transcribed})`),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   const addItem = useMutation({
     mutationFn: async () => {
@@ -194,30 +198,8 @@ function IntakePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster richColors position="top-right" />
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-            ← SOUL AI BRASIL
-          </Link>
-          <nav className="flex gap-1 text-sm">
-            <Link
-              to="/participants"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Participantes
-            </Link>
-            <Link to="/intake" className="rounded-md bg-accent px-3 py-1.5 font-medium">
-              Intake do dia
-            </Link>
-            <Link
-              to="/scripts"
-              className="rounded-md px-3 py-1.5 hover:bg-accent hover:text-accent-foreground"
-            >
-              Roteiro
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AtlasHeader current="/intake" />
+
 
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -227,15 +209,25 @@ function IntakePage() {
               Registre posts, Reels, Stories e transcrições associados às personas.
             </p>
           </div>
-          <label className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Data:</span>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="rounded-md border border-border bg-background px-3 py-2"
-            />
-          </label>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => process.mutate()}
+              disabled={process.isPending}
+              className="rounded-md border border-input px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
+            >
+              {process.isPending ? "Processando..." : "Processar material do dia"}
+            </button>
+            <label className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Data:</span>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="rounded-md border border-border bg-background px-3 py-2"
+              />
+            </label>
+          </div>
+
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">

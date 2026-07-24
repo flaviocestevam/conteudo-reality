@@ -80,7 +80,7 @@ function ScriptsPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div className="flex items-baseline gap-3">
             <Link to="/" className="text-lg font-bold tracking-tight">
-              ATLAS
+              SOUL AI BRASIL
             </Link>
             <span className="text-sm text-muted-foreground">Roteiro diário</span>
           </div>

@@ -79,6 +79,15 @@ function IntakePage() {
   const [file, setFile] = useState<File | null>(null);
   const [bulk, setBulk] = useState("");
 
+  const processFn = useServerFn(processDailyContent);
+  const process = useMutation({
+    mutationFn: () => processFn({ data: { script_date: date } }),
+    onSuccess: (r) =>
+      toast.success(`Processados ${r.processed} (transcritos: ${r.transcribed})`),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
   const addItem = useMutation({
     mutationFn: async () => {
       let file_path: string | null = null;

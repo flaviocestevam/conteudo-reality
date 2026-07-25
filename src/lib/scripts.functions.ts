@@ -76,11 +76,7 @@ export type Momento = z.infer<typeof MomentoSchema>;
 const ScriptInput = z.object({ script_date: z.string() });
 
 function getSupabase() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
+  return getAdmin();
 }
 
 async function loadSettings() {

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "@/lib/supa-admin.server";
 import { z } from "zod";
 
 const Body = z.object({

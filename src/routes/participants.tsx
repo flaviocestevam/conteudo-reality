@@ -122,10 +122,7 @@ function ParticipantsPage() {
         }))
         .filter((r) => r.persona_name && r.instagram_username);
       if (!records.length) throw new Error("Nenhum registro válido no arquivo.");
-      const { error } = await supabase
-        .from("participants")
-        .upsert(records, { onConflict: "instagram_username" });
-      if (error) throw error;
+      await bulkFn({ data: { records } });
       toast.success(`${records.length} participantes importados`);
       qc.invalidateQueries({ queryKey: ["participants"] });
     } catch (e) {

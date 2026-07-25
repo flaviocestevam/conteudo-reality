@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "./supa-admin.server";
 import { z } from "zod";
 import type { ScriptContent } from "./scripts.functions";
 

@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "./supa-admin.server";
 import { z } from "zod";
 
 const Input = z.object({ script_date: z.string() });

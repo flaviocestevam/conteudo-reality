@@ -100,6 +100,32 @@ function IntakePage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const runCapture = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(
+        "https://soul-capture.flaviocostaestevam.workers.dev/api/run",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: "{}",
+        },
+      );
+      const text = await res.text();
+      if (!res.ok) {
+        throw new Error(text || `Falha na captura (HTTP ${res.status})`);
+      }
+      return text;
+    },
+    onSuccess: () => {
+      toast.success("Captura concluída — atualizando material do dia…");
+      qc.invalidateQueries({ queryKey: ["content-items", date] });
+      qc.invalidateQueries({ queryKey: ["home-counts"] });
+    },
+    onError: (e: Error) =>
+      toast.error(`Erro na captura: ${e.message}`, { duration: 8000 }),
+  });
+
+
 
   const addItem = useMutation({
     mutationFn: async () => {
@@ -220,11 +246,6 @@ function IntakePage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Registre posts, Reels, Stories e transcrições associados às personas.
             </p>
-            <p className="mt-2 max-w-2xl text-xs text-muted-foreground">
-              ⚠️ A captura real do Instagram acontece por uma ferramenta externa. Esta tela
-              apenas <b>recebe</b> o material já baixado (arquivo, legenda ou transcrição) —
-              via upload, colagem em JSON/texto ou pelo webhook <code>POST /api/public/intake</code>.
-            </p>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -244,8 +265,43 @@ function IntakePage() {
               />
             </label>
           </div>
-
         </div>
+
+        {/* Rodar captura */}
+        <section className="mb-8 overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/15 via-card to-card p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="min-w-0">
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
+                Captura automática
+              </div>
+              <h2 className="font-serif text-2xl text-foreground">Rodar captura agora</h2>
+              <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+                Dispara o worker que busca no Instagram via Apify e envia o material
+                para esta plataforma. Pode levar de 1 a 3 minutos.
+              </p>
+            </div>
+            <button
+              onClick={() => runCapture.mutate()}
+              disabled={runCapture.isPending}
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_10px_40px_-10px_rgba(79,70,229,0.8)] transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+            >
+              {runCapture.isPending ? (
+                <>
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground" />
+                  Capturando… (1–3 min)
+                </>
+              ) : (
+                <>▶  Rodar captura agora</>
+              )}
+            </button>
+          </div>
+          {runCapture.isPending && (
+            <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-primary/10">
+              <div className="h-full w-1/3 animate-[slide-in-right_2s_ease-in-out_infinite] bg-primary" />
+            </div>
+          )}
+        </section>
+
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Single item form */}

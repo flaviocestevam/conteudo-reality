@@ -39,11 +39,7 @@ export const Route = createFileRoute("/api/public/intake")({
           );
         }
 
-        const supabase = createClient(
-          process.env.SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!,
-          { auth: { persistSession: false } },
-        );
+        const supabase = getAdmin();
 
         // Resolve participant handles → ids
         const handles = Array.from(

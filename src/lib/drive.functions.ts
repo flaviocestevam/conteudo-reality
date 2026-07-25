@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "./supa-admin.server";
 import { z } from "zod";
 import type { ScriptContent } from "./scripts.functions";
 
@@ -7,11 +7,7 @@ const GATEWAY = "https://connector-gateway.lovable.dev/google_drive";
 const Input = z.object({ script_date: z.string() });
 
 function getSupabase() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
+  return getAdmin();
 }
 
 function requireDriveKeys() {

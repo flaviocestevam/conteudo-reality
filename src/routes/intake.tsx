@@ -6,6 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
 import { AtlasHeader } from "@/components/AtlasNav";
 import { processDailyContent } from "@/lib/process.functions";
+import {
+  insertContentItem,
+  bulkInsertContentItems,
+  deleteContentItem,
+  createUploadUrl,
+  getMediaSignedUrl,
+} from "@/lib/writes.functions";
 
 export const Route = createFileRoute("/intake")({
   component: IntakePage,
@@ -80,6 +87,12 @@ function IntakePage() {
   const [bulk, setBulk] = useState("");
 
   const processFn = useServerFn(processDailyContent);
+  const insertFn = useServerFn(insertContentItem);
+  const bulkFn = useServerFn(bulkInsertContentItems);
+  const deleteFn = useServerFn(deleteContentItem);
+  const uploadUrlFn = useServerFn(createUploadUrl);
+  const signedUrlFn = useServerFn(getMediaSignedUrl);
+
   const process = useMutation({
     mutationFn: () => processFn({ data: { script_date: date } }),
     onSuccess: (r) =>
@@ -93,20 +106,24 @@ function IntakePage() {
       let file_path: string | null = null;
       if (file) {
         const path = `${date}/${form.participant_id || "unassigned"}/${Date.now()}-${file.name}`;
-        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
+        const { token } = await uploadUrlFn({ data: { path } });
+        const { error } = await supabase.storage
+          .from(BUCKET)
+          .uploadToSignedUrl(path, token, file);
         if (error) throw error;
         file_path = path;
       }
-      const { error } = await supabase.from("content_items").insert({
-        participant_id: form.participant_id || null,
-        content_date: date,
-        kind: form.kind,
-        caption: form.caption.trim() || null,
-        transcript: form.transcript.trim() || null,
-        source_url: form.source_url.trim() || null,
-        file_path,
+      await insertFn({
+        data: {
+          participant_id: form.participant_id || null,
+          content_date: date,
+          kind: form.kind,
+          caption: form.caption || null,
+          transcript: form.transcript || null,
+          source_url: form.source_url || null,
+          file_path,
+        },
       });
-      if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Item adicionado");
@@ -125,13 +142,11 @@ function IntakePage() {
       try {
         parsed = JSON.parse(bulk);
       } catch {
-        // Plain text: single "other" item without participant
-        const { error } = await supabase.from("content_items").insert({
-          content_date: date,
-          kind: "text",
-          transcript: bulk.trim(),
+        await bulkFn({
+          data: {
+            records: [{ content_date: date, kind: "text", transcript: bulk.trim() }],
+          },
         });
-        if (error) throw error;
         return 1;
       }
       const list = Array.isArray(parsed)
@@ -159,8 +174,7 @@ function IntakePage() {
           source_url: (r.source_url as string) ?? (r.url as string) ?? null,
         };
       });
-      const { error } = await supabase.from("content_items").insert(records);
-      if (error) throw error;
+      await bulkFn({ data: { records } });
       return records.length;
     },
     onSuccess: (n) => {
@@ -174,9 +188,7 @@ function IntakePage() {
 
   const remove = useMutation({
     mutationFn: async (item: ContentItem) => {
-      if (item.file_path) await supabase.storage.from(BUCKET).remove([item.file_path]);
-      const { error } = await supabase.from("content_items").delete().eq("id", item.id);
-      if (error) throw error;
+      await deleteFn({ data: { id: item.id, file_path: item.file_path } });
     },
     onSuccess: () => {
       toast.success("Item removido");
@@ -187,12 +199,12 @@ function IntakePage() {
   });
 
   async function openFile(path: string) {
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
-    if (error || !data) {
+    try {
+      const { url } = await signedUrlFn({ data: { path } });
+      window.open(url, "_blank");
+    } catch {
       toast.error("Não foi possível abrir o arquivo");
-      return;
     }
-    window.open(data.signedUrl, "_blank");
   }
 
   return (

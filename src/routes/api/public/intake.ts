@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "@/lib/supa-admin.server";
 import { z } from "zod";
 
 const Body = z.object({
@@ -39,11 +39,7 @@ export const Route = createFileRoute("/api/public/intake")({
           );
         }
 
-        const supabase = createClient(
-          process.env.SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!,
-          { auth: { persistSession: false } },
-        );
+        const supabase = getAdmin();
 
         // Resolve participant handles → ids
         const handles = Array.from(

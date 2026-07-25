@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { getAdmin } from "./supa-admin.server";
 import { z } from "zod";
 
 const Input = z.object({ script_date: z.string() });
@@ -8,11 +8,7 @@ const GATEWAY = "https://ai.gateway.lovable.dev/v1";
 const VISION_MODEL = "google/gemini-2.5-flash";
 
 function getSupabase() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
+  return getAdmin();
 }
 
 function mediaKind(name: string): "audio" | "video" | null {

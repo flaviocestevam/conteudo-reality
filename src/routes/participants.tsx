@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
 import { AtlasHeader } from "@/components/AtlasNav";
+import {
+  upsertParticipant,
+  deleteParticipant,
+  bulkUpsertParticipants,
+} from "@/lib/writes.functions";
 
 export const Route = createFileRoute("/participants")({
   component: ParticipantsPage,
@@ -48,23 +54,23 @@ function ParticipantsPage() {
   const [editing, setEditing] = useState<Participant | null>(null);
   const [form, setForm] = useState({ persona_name: "", instagram_username: "", notes: "" });
 
+  const upsertFn = useServerFn(upsertParticipant);
+  const deleteFn = useServerFn(deleteParticipant);
+  const bulkFn = useServerFn(bulkUpsertParticipants);
+
   const save = useMutation({
     mutationFn: async (payload: typeof form & { id?: string }) => {
-      const record = {
-        persona_name: payload.persona_name.trim(),
-        instagram_username: normalizeHandle(payload.instagram_username),
-        notes: payload.notes.trim() || null,
-      };
-      if (!record.persona_name || !record.instagram_username) {
+      if (!payload.persona_name.trim() || !payload.instagram_username.trim()) {
         throw new Error("Nome da persona e @ do Instagram são obrigatórios.");
       }
-      if (payload.id) {
-        const { error } = await supabase.from("participants").update(record).eq("id", payload.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("participants").insert(record);
-        if (error) throw error;
-      }
+      await upsertFn({
+        data: {
+          id: payload.id,
+          persona_name: payload.persona_name,
+          instagram_username: payload.instagram_username,
+          notes: payload.notes || null,
+        },
+      });
     },
     onSuccess: () => {
       toast.success(editing ? "Participante atualizado" : "Participante adicionado");
@@ -77,8 +83,7 @@ function ParticipantsPage() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("participants").delete().eq("id", id);
-      if (error) throw error;
+      await deleteFn({ data: { id } });
     },
     onSuccess: () => {
       toast.success("Removido");
@@ -117,10 +122,7 @@ function ParticipantsPage() {
         }))
         .filter((r) => r.persona_name && r.instagram_username);
       if (!records.length) throw new Error("Nenhum registro válido no arquivo.");
-      const { error } = await supabase
-        .from("participants")
-        .upsert(records, { onConflict: "instagram_username" });
-      if (error) throw error;
+      await bulkFn({ data: { records } });
       toast.success(`${records.length} participantes importados`);
       qc.invalidateQueries({ queryKey: ["participants"] });
     } catch (e) {

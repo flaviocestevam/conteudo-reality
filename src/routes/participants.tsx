@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
 import { AtlasHeader } from "@/components/AtlasNav";
+import {
+  upsertParticipant,
+  deleteParticipant,
+  bulkUpsertParticipants,
+} from "@/lib/writes.functions";
 
 export const Route = createFileRoute("/participants")({
   component: ParticipantsPage,

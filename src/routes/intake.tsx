@@ -100,6 +100,32 @@ function IntakePage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const runCapture = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(
+        "https://soul-capture.flaviocostaestevam.workers.dev/api/run",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: "{}",
+        },
+      );
+      const text = await res.text();
+      if (!res.ok) {
+        throw new Error(text || `Falha na captura (HTTP ${res.status})`);
+      }
+      return text;
+    },
+    onSuccess: () => {
+      toast.success("Captura concluída — atualizando material do dia…");
+      qc.invalidateQueries({ queryKey: ["content-items", date] });
+      qc.invalidateQueries({ queryKey: ["home-counts"] });
+    },
+    onError: (e: Error) =>
+      toast.error(`Erro na captura: ${e.message}`, { duration: 8000 }),
+  });
+
+
 
   const addItem = useMutation({
     mutationFn: async () => {

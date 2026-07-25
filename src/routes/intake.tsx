@@ -6,6 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast, Toaster } from "sonner";
 import { AtlasHeader } from "@/components/AtlasNav";
 import { processDailyContent } from "@/lib/process.functions";
+import {
+  insertContentItem,
+  bulkInsertContentItems,
+  deleteContentItem,
+  createUploadUrl,
+  getMediaSignedUrl,
+} from "@/lib/writes.functions";
 
 export const Route = createFileRoute("/intake")({
   component: IntakePage,

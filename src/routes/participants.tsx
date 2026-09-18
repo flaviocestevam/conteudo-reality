@@ -15,9 +15,9 @@ export const Route = createFileRoute("/participants")({
   component: ParticipantsPage,
   head: () => ({
     meta: [
-      { title: "Perfis · SOUL AI BRASIL" },
-      { name: "description", content: "Cadastro dos 27 participantes do reality SOUL AI BRASIL." },
-      { property: "og:title", content: "Perfis · SOUL AI BRASIL" },
+      { title: "Perfis · ATLAS AI: 196 — Brasil" },
+      { name: "description", content: "Cadastro dos 27 participantes do reality ATLAS AI: 196 — Brasil." },
+      { property: "og:title", content: "Perfis · ATLAS AI: 196 — Brasil" },
       { property: "og:description", content: "Cadastro dos 27 participantes do reality de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

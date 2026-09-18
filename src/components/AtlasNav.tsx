@@ -13,7 +13,7 @@ export function AtlasHeader({ current }: { current: (typeof items)[number]["to"]
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-5">
         <Link to="/" className="flex items-baseline gap-3">
-          <span className="font-serif text-xl leading-none text-foreground">Soul AI</span>
+          <span className="font-serif text-xl leading-none text-foreground">ATLAS AI: 196</span>
           <span className="hidden text-[10px] font-medium uppercase tracking-[0.35em] text-primary sm:inline">
             Brasil
           </span>

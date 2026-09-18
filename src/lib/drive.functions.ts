@@ -163,7 +163,11 @@ export const syncDayToDrive = createServerFn({ method: "POST" })
       .select("drive_folder_id, drive_root_name")
       .eq("singleton", true)
       .maybeSingle();
-    const rootName = settings?.drive_root_name ?? "SOUL-AI-BRASIL-Capturas";
+    const configuredRootName = settings?.drive_root_name as string | null | undefined;
+    const rootName =
+      !configuredRootName || /^(SOUL-AI-BRASIL|ATLAS)-Capturas$/i.test(configuredRootName)
+        ? "ATLAS AI: 196 — Brasil - Capturas"
+        : configuredRootName;
     const rootParent = (settings?.drive_folder_id as string | null) ?? null;
 
     // Load script

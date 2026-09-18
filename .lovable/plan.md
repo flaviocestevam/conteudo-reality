@@ -1,6 +1,6 @@
-# ATLAS Captura & Roteiro — Reconstrução
+# ATLAS AI: 196 — Brasil — Reconstrução
 
-O projeto atual (SOUL AI BRASIL) já tem base sólida: cadastro de personas, intake, geração de roteiro com Gemini e tabelas `participants`, `content_items`, `daily_scripts`. Vou renomear para ATLAS e completar o que falta, sem quebrar o que já funciona.
+O projeto ATLAS AI: 196 — Brasil já tem base sólida: cadastro de personas, intake, geração de roteiro com Gemini e tabelas `participants`, `content_items`, `daily_scripts`. A reconstrução completa o que falta sem quebrar o que já funciona.
 
 ## O que já existe e será mantido/melhorado
 - Tabelas `participants`, `content_items`, `daily_scripts` + bucket `reality-media`
@@ -11,7 +11,7 @@ O projeto atual (SOUL AI BRASIL) já tem base sólida: cadastro de personas, int
 ## O que será refeito
 
 ### Fase A — Fundação e regras dos comentaristas
-1. Renomear UI para **ATLAS Captura & Roteiro** (títulos, heads, dashboard). Manter menção interna a "SOUL AI BRASIL" como nome do reality.
+1. Padronizar a UI como **ATLAS AI: 196 — Brasil** (títulos, heads, dashboard).
 2. Reescrever o prompt de roteiro em `src/lib/scripts.functions.ts` com as **regras rígidas novas**:
    - **PROMPT**: frio/analítico/cético, curto, ranking/padrão/estratégia, insinua a entidade misteriosa (só ele).
    - **AGENTE**: empática/emocional, fala mais longa, humanidade/vulnerabilidade.

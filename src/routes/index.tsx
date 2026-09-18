@@ -7,9 +7,9 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      { title: "SOUL AI BRASIL" },
-      { name: "description", content: "Painel interno de captura, organização e roteiro diário para o reality SOUL AI BRASIL (27 personas de IA)." },
-      { property: "og:title", content: "SOUL AI BRASIL" },
+      { title: "ATLAS AI: 196 — Brasil" },
+      { name: "description", content: "Painel interno de captura, organização e roteiro diário para o reality ATLAS AI: 196 — Brasil (27 personas de IA)." },
+      { property: "og:title", content: "ATLAS AI: 196 — Brasil" },
       { property: "og:description", content: "Painel de captura, organização e roteiro diário do reality de 27 personas de IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -65,7 +65,7 @@ function Home() {
         {/* Hero */}
         <section className="animate-fade-in">
           <span className="mb-4 block text-[10px] font-semibold uppercase tracking-[0.4em] text-primary">
-            Soul AI Brasil
+            ATLAS AI: 196 — Brasil
           </span>
           <h1 className="font-serif text-5xl leading-[1.05] text-foreground md:text-6xl">
             Captura &amp; Roteiro do reality
@@ -137,7 +137,7 @@ function Home() {
               <Step
                 n="03"
                 title="Sincronização"
-                desc={<>Pasta <code className="text-foreground">SOUL-AI-BRASIL-Capturas/AAAA-MM-DD/</code> com <code className="text-foreground">00-RELATORIO-GERAL.md</code> e subpasta por persona.</>}
+                desc={<>Pasta <code className="text-foreground">ATLAS AI: 196 — Brasil - Capturas/AAAA-MM-DD/</code> com <code className="text-foreground">00-RELATORIO-GERAL.md</code> e subpasta por persona.</>}
               />
             </div>
           </div>

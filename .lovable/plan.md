@@ -19,7 +19,7 @@ O projeto ATLAS AI: 196 — Brasil já tem base sólida: cadastro de personas, i
    - Estrutura do roteiro passa a ser **por MOMENTO**, não por persona. Cada momento tem: `titulo`, `personas_envolvidas`, `angulos` (dado/emoção/comédia), `formato` (solo|dialogo), `falas[]` com `{comentarista, texto}`.
    - Dra. Sinapse aparece **1x por semana** (dia configurável em settings). Nos demais dias, sem Sinapse.
    - Proibido inventar fatos fora do material.
-3. Adicionar tabela `settings` (singleton) com: `sinapse_weekday` (0–6), `drive_folder_id`, `drive_root_name` (default `ATLAS-Capturas`), `sinapse_config` (nome/tom/regras). Migrar `sinapse_config` de `daily_scripts` para settings.
+3. Adicionar tabela `settings` (singleton) com: `sinapse_weekday` (0–6), `drive_folder_id`, `drive_root_name` (default `ATLAS AI: 196 — Brasil - Capturas`), `sinapse_config` (nome/tom/regras). Migrar `sinapse_config` de `daily_scripts` para settings.
 
 ### Fase B — Processamento inteligente (não guardar vídeo)
 Novo server fn `processDailyContent({script_date})` que, para cada `content_item` do dia:
@@ -36,9 +36,9 @@ Botão "Processar material do dia" em `/intake` e em `/scripts`.
 
 ### Fase C — Google Drive
 1. Conectar via `standard_connectors--connect` (`google_drive`) — HITL card.
-2. Settings expõe `drive_folder_id` (pasta raiz onde criar `ATLAS-Capturas/`).
+2. Settings expõe `drive_folder_id` (pasta raiz onde criar `ATLAS AI: 196 — Brasil - Capturas/`).
 3. Server fn `syncDayToDrive({script_date})`:
-   - Cria `ATLAS-Capturas/AAAA-MM-DD/` se não existir.
+   - Cria `ATLAS AI: 196 — Brasil - Capturas/AAAA-MM-DD/` se não existir.
    - Para cada persona com material: cria `Persona-NN-Nome/` e sobe `.md` por content_item (texto consolidado).
    - Sobe `00-RELATORIO-GERAL.md` na raiz do dia com: resumo executivo (IA) + lista por persona + roteiros por momento.
 4. Retorna URL da pasta do dia.
